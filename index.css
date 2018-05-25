@@ -1,0 +1,65 @@
+.centered {
+    margin-left:40%;
+    color:burlywood ;
+}
+.topmargin {
+    margin-top: 3%;
+}
+.body {
+    margin : 7%;
+}
+.card {
+    display: inline-block;
+    margin:15px;
+    border: 1px solid #eee;
+    width: 200px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+/* Add some padding inside the card container */
+.container {
+    padding: 2px 16px;
+}
+/* .footerCard {
+    text-align:center;
+} */
+.sameLine {
+    display:inline;
+}
+.right {
+    text-align: end;
+    margin-left: 105px;
+}
+.left {
+    text-align: start;
+}
+.down_right {
+    position: fixed;;
+    bottom: 10px;
+    right: 10px;
+}
+.red {
+    color:red
+}
+.textalignedcenter {
+    text-align: center;
+}
+button {
+    border-radius: 50%;
+    /* padding: 16px;
+    font-size: 10px;
+    border:none; */
+    background-color:burlywood; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    outline: 0;
+}
+.button:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
