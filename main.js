@@ -276,7 +276,7 @@ function refreshSideBar() {
                 '<p class="count">' + itemCount + '</p>' +
                 '</div>' +
                 '<div class= "titleAndIcons">' +
-                '<button onclick = "replaceOldItem(\'' + productId + '\')" class="iconButton">' +
+                '<button onclick = "replaceOldItemWhenAdding(\'' + productId + '\')" class="iconButton">' +
                 '<i class="fa fa-plus"></i>' +
                 '</button>' +
                 '<p class= "sameLine body productTitleSidenav">' + productTitle + '</p>' +
