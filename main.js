@@ -1,23 +1,16 @@
-
-
-var myKeys = [];
-var myItems = [];
 var allProducts = [];
-localforage.clear();
+// SideBar open or not
+sideBar = false;
 function getProducts() {
     var productsHTML = document.getElementById('productsPart');
     productsHTML.innerHTML = '';
     axios.get('https://faker-api-yczfsfkfcd.now.sh/api/products')
         .then(function (response) {
             displayProductHTML(response.data.data);
-            console.log(response.data.data);
-        })
-        .catch(function (error) {
-            console.log(error);
         });
     function displayProductHTML(products) {
         let self = this;
-        for (var productIndex = 0; productIndex < products.length; productIndex ++) {
+        for (var productIndex = 0; productIndex < products.length; productIndex++) {
             var product = products[productIndex];
             var productTitle = products[productIndex].title;
             var productDescription = products[productIndex].description;
@@ -25,281 +18,325 @@ function getProducts() {
             var productPrice = products[productIndex].price;
             allProducts.push(product);
             productsHTML.innerHTML +=
-                '<div class = "card">' +
-                '<h4><b>' + productTitle + '</b></h4>' +
-                '<p>' + productDescription + '</p>' +
-                '<div class = "footerCard textalignedcenter">' +
-                '<button onclick = "prepareToAddItems(\'' + productIndex + '\')" class = "button"' +
-                '<p>' + productPrice + '</p>' +
+                '<div class="card4perLine">' +
+                '<img src = \'' + productImage + '\' alt="product title" style="width:100%">' +
+                '<div class="title">' +
+                productTitle +
+                '</div>' +
+                '<button class= "totalCircle" >' +
+                productPrice +
                 '</button>' +
-                '<button onclick = "getMyItems()" class = "button"' +
-                '<p> getMyItems </p>' +
-                '</button>' +
-                '<button onclick = "hasProduct(\'' + productIndex + '\' )" class = "button"' +
-                '<p> has product?</p>' +
-                '</button>' +
-                '<button onclick = "removeProduct(\'' + productIndex + '\')" class = "button"' +
-                '<p> remoove </p>' +
-                '</button>' +
-                '<button onclick = "getTotal()" class = "button"' +
-                '<p> total </p>' +
-                '</button>' +
+
+                '<div class="cardBody cardDesc max-lines">' +
+                '<p>' +
+                productDescription +
+                '</p>' +
+                '</div>' +
+                '<div >' +
+                '<button class="cardButton" onClick="prepareToAddItems(\'' + productIndex + '\')" >Buy</button>' +
+                '</div>' +
                 '</div>';
-
         }
     }
 }
-function findKeyOfProduct(productId) {
-    // gets the index of a PRODUCT 
-    var key = -1;
-    console.log('my items are ' + myItems);
-    myItems.forEach(item => {
-        if (item.product.id === productId) {
-            console.log('item\'s product is ' + item.product.id);
-            key = item.key;
+/*
+* refreshed the product total count above the cart icon 
+* with total number of products
+*/
+function refreshValueOfCartNumber() {
+    var totalProducts = 0;
+    var numberHtml = document.getElementById('numberOfItems');
+    var i = 0;
+    numberHtml.innerHTML = [];
+    getMyItems().then(items => {
+        var itemsLength = items.length;
+        if (itemsLength === 0) {
+            numberHtml.innerHTML = 0;
         }
-    });
-    return key;
-}
+        items.map(item => {
+            var itemCount = Number(item.count);
+            totalProducts += itemCount
+            i++;
+            if (i === itemsLength) {
+                numberHtml.innerHTML = totalProducts;
 
-function hasProductPromise(productIndex) {
-    console.log('in promise');
-    return new Promise(resolve, reject => {
-        // check if cart has this product if yes get the key and return it if no reject
-        var productToBeQueried = allProducts[productIndex];
-        var productId = productToBeQueried.id;
-        let found = false;
-        localforage.keys().then(keys => {
-            console.log('keys returned from has Product are:  ' + keys);
-            if (keys.length === 0) {
-                found = false;
-                reject('EMPTY LOCALFORAGE')
             }
-            searchInList(keys);
-        });
+        })
     });
-    function searchInList(keys) {
-        console.log('searching')
-        const promises = keys.map(key => {
-            this.localforage.getItem(key).then(value => {
-                checkIfEquals(value);
-            });
+}
+function hasProduct(productIndex) {
+    const productToBeQueried = allProducts[productIndex];
+    const productId = productToBeQueried.id;
+    var found = false;
+    localforage.keys().then(keys => {
+        var keyMatched = keys.filter(key => {
+            return key == productId;
         });
-    }
-    function checkIfEquals(value) {
-        console.log('in check if equals');
-        if (value.product.id === productId) {
-            console.log('cart has this product returning true');
-            found = true;
-            var itemKey = this.findKeyOfProduct(allProducts[productIndex].id);
-            resolve(itemKey);
+        if (keyMatched.length === 0) {
+            found = false;
         }
         else {
-            console.log('cart doesnt have this product returning false');
-            found = false;
+            found = true;
         }
-    }
-    if (found == false) {
-        reject('DOESN\'T EXIST');
-    }
-}
-
-function hasProduct(productIndex) {
-    return new Promise(async resolve => {
-        var productToBeQueried = allProducts[productIndex];
-        var productId = productToBeQueried.id;
-        let found = false;
-        var keys = await localforage.keys();
-        console.log('keys returned from has Product are:  ' + keys);
-        if (keys.length === 0) {
-            console.log('empty localForage returning false');
-            found = false;
-        }
-        searchInList(keys);
-
-        function searchInList(keys) {
-            keys.map(async key => {
-                var value = await localforage.getItem(key);
-                checkIfEquals(value);
-            });
-        }
-        function checkIfEquals(value) {
-            if (value.product.id === productId) {
-                console.log('in check if equals cart has this product returning true');
-                found = true;
-            }
-            else {
-                console.log('in check if equals cart doesnt have this product returning false');
-                found = false;
-            }
-        }
-        resolve(found);
+        return found;
     });
 }
-
+/*
+* a promise that when resolved gets 
+* current items
+*/
 function getMyItems() {
-    const result = [];
-    myItems = [];
-    this.localforage.keys().then(keys => {
-        if (keys.length === 0) {
-            console.log('empty localForage');
-        }
-        getValues(keys);
-        myKeys = keys;
-        console.log('saving keys to global variable with: ' + keys);
-    });
-    function getValues(keys) {
-        const promises = keys.map(key => {
-            this.localforage.getItem(key).then(value => {
-                putInArray(value);
+    return new Promise(resolve => {
+        const result = [];
+        var i = 0;
+        localforage.keys().then(keys => {
+            var i = 0;
+            var keysLength = keys.length;
+            keys.map(key => {
+                this.localforage.getItem(key).then(value => {
+                    result.push(value);
+                    i++;
+                    if (i === keysLength) {
+                        resolve(result);
+                        return result;
+                    }
+                });
             });
         });
-    }
-    function putInArray(value) {
-        result.push(value);
-        myItems.push(value);
-    }
-    console.log(myItems);
-    return result;
+    });
+
 }
-// decides whether to add a new item or increment count and price of old one
+/*
+* decides whether to add a new item or increment count and price of old one
+*/
 function prepareToAddItems(productIndex) {
 
     var productToBeQueried = allProducts[productIndex];
-    var productId = productToBeQueried.id;
+    var productId = productToBeQueried.id + '';
     let found = false;
 
     localforage.keys().then(keys => {
-        console.log('keys returned from has Product are:  ' + keys);
-        if (keys.length === 0) {
-            console.log('empty localForage creating new object');
-            found = false;
+        var keyMatched = keys.filter(key => {
+            return key === productId;
+        });
+        if (keyMatched.length === 0) {
             createNewItem(productIndex);
         }
         else {
-            searchInList(keys);
+            replaceOldItemWhenAdding(productId);
         }
     });
-
-    function searchInList(keys) {
-        var found = false;
-        var keysLength = keys.length;
-        console.log('length of keys is: ' + keysLength);
-        for (var i = 0; i < keysLength; i++) {
-            
-            console.log('iteration number: ' + i);
-            var currKey = keys[i];
-            localforage.getItem(currKey).then(value => {
-                console.log(value);
-                if (value.product.id === productId && found === false) {
-                    console.log('in condition 1 found product and found is false')
-                    found = true;
-                    replaceOldItem(currKey, productIndex);
-                    return;
-                }
-                else if (i === keysLength && found === false) {
-                    console.log('in lase iteraation and found is false');
-                    createNewItem(productIndex);
-                    return;
-                }
-            });
-        }
-
-    }
 }
 
-function replaceOldItem(itemKey, productIndex) {
-    console.log('replacing old value');
-    localforage.getItem(itemKey).then(oldItem => {
-        console.log('old item is: ' + oldItem);
-        console.log('key is: ' + itemKey);
-        updateValuesOfOldItem(itemKey, oldItem);
-    });
-    function updateValuesOfOldItem(itemKey, oldItem) {
+/*
+* increments count and increases price
+*/
+function replaceOldItemWhenAdding (productId) {
+    localforage.getItem(productId).then(oldItem => {
         var oldCount = Number(oldItem.count);
         var oldPrice = Number(oldItem.price);
-        var thisPrice = Number(allProducts[productIndex].price);
-        localforage.setItem(itemKey, {
-            product: allProducts[productIndex], count: oldCount + 1, price: thisPrice + oldPrice
+        var thisPrice = oldPrice / oldCount;
+
+        localforage.setItem(productId, {
+            product: oldItem.product, count: oldCount + 1, price: thisPrice + oldPrice
         }).then(newItem => {
-            console.log('after incrementing count: ' + newItem.count + ' and price ' + newItem.price);
+            refreshValueOfCartNumber();
+            if (sideBar) {
+                refreshSideBar();
+            }
         });
-    }
+
+    });
 }
+/*
+*  creates a new item with a new value in localforage
+*/
+
 function createNewItem(productIndex) {
-    console.log('creating a new item');
     var productToBeAdded = allProducts[productIndex];
     const newProductPrice = Number(productToBeAdded.price);
+    const productId = productToBeAdded.id;
+    const itemKey = productId + '';
     let newItem = { product: productToBeAdded, count: 1, price: newProductPrice };
-    localforage.setItem(chance.string(), newItem).then(newAddedItem => {
-        console.log('brand new item is: ' + newAddedItem.count + ', with price: ' + newAddedItem.price);
+    localforage.setItem(itemKey, newItem).then(newAddedItem => {
+        if (sideBar) {
+            refreshSideBar();
+        }
+        refreshValueOfCartNumber();
     });
 }
-function removeProduct(productIndex) {
-    const productId = allProducts[productIndex].id;
-    this.localforage.keys().then(keys => {
-        if (keys.length === 0) {
-            console.log('empty localForage');
+/*
+* decides whether to remove the whole item or decrement count and price of old one
+*/
+function prepareToRemoveProduct(productId) {
+    localforage.getItem(productId).then(value => {
+        if (value.count > 1) {
+            replaceOldItemWhenRemoving(productId);
         }
-        getValues(keys);
+        else {
+            removeItem(productId);
+        }
     });
-    function getValues(keys) {
-        for (var i = 0; i < keys.length; i++) {
-            localforage.getItem(keys[i]).then(value => {
-                if (value.product.id == productId) {
-                    console.log(value.product.count);
-                }
-            })
-        }
-    }
 }
-function decrementCount(itemKey, productIndex) {
-    console.log('decrementing count');
-    localforage.getItem(itemKey).then(value => {
+
+/*
+*  decrements Count and decreses the price 
+*/
+function replaceOldItemWhenRemoving(productId) {
+    localforage.getItem(productId).then(value => {
         var newValue = value;
         const oldCount = Number(value.count);
         const oldPrice = Number(value.price);
-        const productPrice = Number(allProducts[productIndex].price);
+        const productPrice = oldPrice / oldCount;
+
         newValue.count = value.count - 1;
         newValue.price = oldPrice - productPrice;
-        localforage.setItem(itemKey, newValue).then(value => {
-            console.log(value);
-        });
-    });
-}
-function removeItem(key) {
-    console.log('removing item');
-    localforage.removeItem(key).then(value => {
-        getMyItems();
-    });
-}
-function getTotal() {
-    var total = 0;
-    this.localforage.keys().then(keys => {
-        if (keys.length === 0) {
-            console.log('empty localForage');
-        }
-        getValues(keys);
-    });
-    function getValues(keys) {
-        var keysLength = keys.length;
-        var i = 1;
-        keys.map(key => {
-            this.localforage.getItem(key).then(value => {
-                productPrice = Number(value.price);
-                total += productPrice;
-                i++;
-                if (i == keysLength) {
-                    console.log('should enter here once');
-                    console.log(total);
-                    return total;
-                }
-            });
+        localforage.setItem(productId, newValue).then(value => {
+            if (sideBar) {
+                refreshSideBar();
+            }
+            refreshValueOfCartNumber();
 
         });
+    });
+}
+
+/*
+*  removes the whole item 
+*/
+function removeItem(key) {
+    localforage.removeItem(key).then(value => {
+        console.log('refreshing carNumber');
+        refreshValueOfCartNumber();
+        if (sideBar) {
+            refreshSideBar();
+        }
+    });
+}
+
+/*
+*  gets the total price 
+*/
+function getTotal() {
+    return new Promise(resolve => {
+        var total = 0;
+        this.localforage.keys().then(keys => {
+            if (keys.length === 0) {
+                resolve(0);
+            }
+            var keysLength = keys.length;
+            var i = 0;
+            keys.map(key => {
+                localforage.getItem(key).then(value => {
+                    productPrice = Number(value.price);
+                    total += productPrice;
+                    i++;
+                    if (i == keysLength) {
+                        resolve(total);
+                    }
+                });
+
+            });
+        });
+    });
+}
+
+/*
+*  gets the item that includes this product 
+*/
+
+function getItem(productIndex) {
+    const productToBeQueried = allProducts[productIndex];
+    const productId = productToBeQueried.id + '';
+    localforage.getItem(productId).then(value => {
+        return value;
+    });
+}
+
+/*
+*  refreshes sidebar with curr items 
+*/
+
+function refreshSideBar() {
+    refreshTotal();
+    refreshValueOfCartNumber();
+    var itemsHTML = document.getElementById('itemsPart');
+    itemsHTML.innerHTML = '<div class="white centeredText">';
+    getMyItems().then(items => {
+        itemsHTML.innerHTML = [];
+        for (var itemIndex = 0; itemIndex < items.length; itemIndex++) {
+            var productId = items[itemIndex].product.id;
+            var productTitle = items[itemIndex].product.title;
+            var productImage = items[itemIndex].product.image;
+            var itemCount = items[itemIndex].count;
+            itemsHTML.innerHTML +=
+                '<div class="white centeredText">' +
+                '<div class="sideNavBody">' +
+                '<div class = "smallProductImage" style= "background-image: url(' + productImage + ');" >' +
+                '<p class="count">' + itemCount + '</p>' +
+                '</div>' +
+                '<div class= "titleAndIcons">' +
+                '<button onclick = "replaceOldItem(\'' + productId + '\')" class="iconButton">' +
+                '<i class="fa fa-plus"></i>' +
+                '</button>' +
+                '<p class= "sameLine body productTitleSidenav">' + productTitle + '</p>' +
+                '<button onclick = "prepareToRemoveProduct(\'' + productId + '\')" class="iconButton">' +
+                '   <i class="fa fa-minus"></i>' +
+                '</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<hr class="line">';
+        }
+    });
+
+}
+/*
+*  refreshes the total price 
+*/
+
+function refreshTotal() {
+    getTotal().then(value => {
+        var totalHtml = document.getElementById("totalPart");
+        totalHtml.innerHTML = value;
+    });
+}
+/*
+*  clears cart 
+*/
+function clear() {
+    localforage.clear();
+}
+
+/*
+*  control the opening and closing of the sidebar 
+*/
+function toggleSideBar() {
+    refreshValueOfCartNumber();
+    if (sideBar) {
+        sideBar = false;
+        closeSideBar();
+    } else {
+        refreshSideBar();
+        sideBar = true;
+        openSideBar();
     }
 }
 
-function clear() {
-    localforage.clear();
+function openSideBar() {
+    document.getElementById("itemsSideBar").style.width = "25%";
+    document.getElementById("main").style.marginRight = "25%";
+    var cards = document.getElementsByClassName("card4perLine");
+    for (var i = 0; i < cards.length; i++) {
+        cards[i].style.maxWidth = "80%";
+    }
+}
+
+function closeSideBar() {
+    document.getElementById("itemsSideBar").style.width = "0";
+    document.getElementById("main").style.marginRight = "0";
+    var cards = document.getElementsByClassName("card4perLine");
+    for (var i = 0; i < cards.length; i++) {
+        cards[i].style.maxWidth = "22%";
+    }
 }

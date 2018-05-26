@@ -1,65 +1,319 @@
-.centered {
-    margin-left:40%;
-    color:burlywood ;
-}
-.topmargin {
-    margin-top: 3%;
+.bgColor {
+    background-color: rgb(231, 233, 233);
 }
 .body {
-    margin : 7%;
+    margin : 3%;
+    display:inline;
+    text-align: center;
 }
-.card {
+.mainBody {
+    margin:auto;
+    display: inline;
+}
+.cardBody {
+    margin : 3%;
+    display:inline;
+    max-height: 100px;
+}
+.margin {
+    margin-left:6%;
+}
+.bigMargin {
+    margin-right :3%;
+}
+.withMargin {
+    margin-top:5%;
+    margin-right:9%;
+}
+.clearButton {
+    margin-top:4%;
+    margin-right: 6%;
+    border: 2px solid  rgb(231, 233, 233);
+    background-color: rgb(53, 56, 13);;
+    color:  rgb(231, 233, 233);
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    border-color:  rgb(231, 233, 233);
+}
+.centeredText {
+    text-align:center;
+}
+flexDisplay {
+    display: flex;
+}
+
+.card4perLine {
+    display:inline-block;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 22%;
+    margin:1%;
+    text-align: center;
+    height: 10%;
+}
+.iconButton {
+    margin:1%;
+    outline: none;
+    background-color: rgb(53, 56, 13);;
+    color:  rgb(231, 233, 233);
+    padding: 12px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    border-color:    rgb(157, 163, 73);;
+    border-radius: 8px;
+}
+.line {
+    margin-right:6%;
+    margin-top:7%
+    
+}
+.cardDesc {
+    font: italic bold 17px/30px Georgia, serif;
+}
+.title {
+    color: grey;
+    font-size: 25px;
+
+}
+.titleAndIcons {
+    margin-top:10%;
+}
+.max-lines {
+    display: block; /* or inline-block */
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    overflow: hidden;
+    max-height: 9em;
+    line-height: 1em;
+  }
+.cardButton {
+    border: none;
+    outline: 0;
     display: inline-block;
-    margin:15px;
-    border: 1px solid #eee;
-    width: 200px;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    padding: 8px;
+    color:    rgb(157, 163, 73);
+    background-color: rgb(53, 56, 13);
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+}
+.total  {
+        width: 80px;
+        height: 80px;
+        border-radius: 40px;
+        font-size: 30px;
+        color:  rgb(231, 233, 233);
+        line-height: 80px;
+        text-align: center;
+        background: rgb(53, 56, 13);
+        border-color:  rgb(157, 163, 73);
+        outline:none;
+
+
+}
+.circle {
+        width: 160px;
+        height: 120px;
+        border-radius: 60px;
+        font-size: 60px;
+        color: rgb(53, 56, 13);
+        line-height: 100px;
+        text-align: center;
+        background: rgb(231, 233, 233);
+        border-color:  rgb(157, 163, 73);
+        outline:none;
+
+    
+}
+.myItemsCircle {
+    outline:none;
+    margin-top:1%;
+    width: 120px;
+    height: 60px;
+    font-size:16px;
+    border-radius: 60px;
+    color: rgb(231, 233, 233);
+    line-height: 10px;
+    text-align: center;
+    background:rgb(53, 56, 13);
+    border-color:  rgb(157, 163, 73);
+
+}
+
+.smallCircle {
+    outline:none;
+    margin-top:1%;
+    width: 80px;
+    height: 80px;
+    font-size:25px;
+    border-radius: 40px;
+    color: rgb(53, 56, 13);
+    line-height: 60px;
+    text-align: center;
+    background: rgb(231, 233, 233);
+    border-color:  rgb(157, 163, 73);
+
+}
+
+.totalCircle {
+    width: 90px;
+    height: 80px;
+    border-radius: 40px;
+    font-size: 20px;
+    color: rgb(53, 56, 13);
+    line-height: 80px;
+    text-align: center;
+    background: rgb(231, 233, 233);
+    border-color:  rgb(157, 163, 73);
+    outline:none;
+
+}
+
+.purchaseButton {
+    margin:1%;
+    background-color: rgb(53, 56, 13);;
+    color: rgb(231, 233, 233);
+    padding: 12px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    border-color:  rgb(157, 163, 73);;
+    border-radius: 8px;
+    outline:none;
+
+
+}
+.purchaseAndPrice {
+    margin:10%;
+}
+a {
+    text-decoration: none;
+    font-size: 22px;
+    margin-top: 23px;
+
+}
+.sameLine {
+    display:inline-block;
+}
+.right {
+    float: right;
+}
+.left {
+    float: left;
+    text-align: left;
+}
+button:hover, a:hover {
+    opacity: 0.7;
+}
+
+.white {
+    color: rgb(231, 233, 233);
+}
+.green {
+    color:  rgb(53, 56, 13);
+}
+.sidenav {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    right: 0;
+    background-color: rgb(53, 56, 13); /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
     transition: 0.3s;
 }
 
-/* Add some padding inside the card container */
-.container {
-    padding: 2px 16px;
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+    color: rgb(231, 233, 233);
 }
-/* .footerCard {
-    text-align:center;
+.bigFont {
+    font-size: 40px;
+}
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+.sideNavBody {
+    margin-top:10%;
+}
+.productTitleSidenav {
+    font: italic bold 15px/15x Georgia, serif;
+    }
+.smallProductImage {
+    margin-top:-3%;
+    margin-left:7%;
+    object-fit: contain;
+    width: 80px;
+    height: 80px;
+    float: left;
+
+    background-size: cover;
+    background-position: center;
+    border-radius: 40px;
+}
+/* w3schools */
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+    transition: margin-left .5s;
+    padding: 20px;
+}
+
+/* @media (max-width: 800px) {
+    .card4perLine {
+        display:inline-block;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        color:peru;
+        max-width: 100%;
+        margin:1%;
+        text-align: center;
+    }
 } */
-.sameLine {
-    display:inline;
-}
-.right {
-    text-align: end;
-    margin-left: 105px;
-}
-.left {
-    text-align: start;
-}
-.down_right {
-    position: fixed;;
-    bottom: 10px;
-    right: 10px;
-}
-.red {
-    color:red
-}
-.textalignedcenter {
-    text-align: center;
-}
-button {
-    border-radius: 50%;
-    /* padding: 16px;
-    font-size: 10px;
-    border:none; */
-    background-color:burlywood; 
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
+a.notif {
+    position: relative;
+    display: block;
+    height: 50px;
+    width: 50px;
+    background-size: contain;
     text-decoration: none;
-    display: inline-block;
-    font-size: 10px;
-    outline: 0;
-}
-.button:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
+  }
+  .num {
+    position: absolute;
+    font-size:20px;
+    right: px;
+    top: 75px;
+    color:   rgb(157, 163, 73);
+
+  }
+  .count {
+    position: relative;
+    display: block;
+    left:80%;
+    bottom: 25%;
+    font-size: 25px;    
+    height: 45px;
+    width: 50px;
+    background-size: contain;
+    text-decoration: none;
+    color:   rgb(157, 163, 73);
+    height:30px;
+    width: 30px;
+    border-radius:15px;
+
+  }
