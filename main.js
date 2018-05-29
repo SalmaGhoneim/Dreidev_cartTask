@@ -2,6 +2,7 @@ var allProducts = [];
 // SideBar open or not
 sideBar = false;
 function getProducts() {
+    refreshValueOfCartNumber();
     var productsHTML = document.getElementById('productsPart');
     productsHTML.innerHTML = '';
     axios.get('https://faker-api-yczfsfkfcd.now.sh/api/products')
@@ -19,21 +20,20 @@ function getProducts() {
             allProducts.push(product);
             productsHTML.innerHTML +=
                 '<div class="card4perLine">' +
-                '<img src = \'' + productImage + '\' alt="product title" style="width:100%">' +
+                '<img class = "cardImage" src = \'' + productImage + '\' alt=' + productTitle + '"" style="width:100%;">' +
                 '<div class="title">' +
                 productTitle +
                 '</div>' +
-                '<button class= "totalCircle" >' +
+                '<button disabled class= "priceCircle" >' +
                 productPrice +
                 '</button>' +
-
-                '<div class="cardBody cardDesc max-lines">' +
+                '<div class="cardBody max-lines">' +
                 '<p>' +
                 productDescription +
                 '</p>' +
                 '</div>' +
                 '<div >' +
-                '<button class="cardButton" onClick="prepareToAddItems(\'' + productIndex + '\')" >Buy</button>' +
+                '<button class="cardButton buttonWithHover" onClick="prepareToAddItems(\'' + productIndex + '\')" >Buy</button>' +
                 '</div>' +
                 '</div>';
         }
@@ -50,9 +50,6 @@ function refreshValueOfCartNumber() {
     numberHtml.innerHTML = [];
     getMyItems().then(items => {
         var itemsLength = items.length;
-        if (itemsLength === 0) {
-            numberHtml.innerHTML = 0;
-        }
         items.map(item => {
             var itemCount = Number(item.count);
             totalProducts += itemCount
@@ -92,6 +89,16 @@ function getMyItems() {
         localforage.keys().then(keys => {
             var i = 0;
             var keysLength = keys.length;
+            if (keysLength === 0) {
+                hideClear(true);
+                hideProductsAndPurchase(true);
+            }
+            else if(keysLength === 1 ){
+                hideClear(false);
+                hideProductsAndPurchase(false);
+    
+            }
+    
             keys.map(key => {
                 this.localforage.getItem(key).then(value => {
                     result.push(value);
@@ -131,7 +138,7 @@ function prepareToAddItems(productIndex) {
 /*
 * increments count and increases price
 */
-function replaceOldItemWhenAdding (productId) {
+function replaceOldItemWhenAdding(productId) {
     localforage.getItem(productId).then(oldItem => {
         var oldCount = Number(oldItem.count);
         var oldPrice = Number(oldItem.price);
@@ -206,13 +213,36 @@ function replaceOldItemWhenRemoving(productId) {
 */
 function removeItem(key) {
     localforage.removeItem(key).then(value => {
-        console.log('refreshing carNumber');
         refreshValueOfCartNumber();
+
+
         if (sideBar) {
             refreshSideBar();
         }
     });
 }
+function hideClear(shouldHide) {
+    var status = document.getElementById('dissapearWhenNoProduct');
+    if (shouldHide) {
+        status.style.display = 'none';
+    } else {
+        status.style.display = 'block';
+
+
+    }
+}
+function hideProductsAndPurchase(shouldHide) {
+    var status = document.getElementsByClassName('purchaseAndPrice');
+        if (shouldHide) {
+            status[0].style.display = 'none';
+        } else {
+            status[0].style.display = 'block';
+
+        }
+}
+
+
+
 
 /*
 *  gets the total price 
@@ -261,7 +291,10 @@ function refreshSideBar() {
     refreshTotal();
     refreshValueOfCartNumber();
     var itemsHTML = document.getElementById('itemsPart');
-    itemsHTML.innerHTML = '<div class="white centeredText">';
+    itemsHTML.innerHTML = '<div class="noProductsFont centeredText">' +
+        '<p> You haven\'t added any products yet! </p>' +
+        '</div>';
+
     getMyItems().then(items => {
         itemsHTML.innerHTML = [];
         for (var itemIndex = 0; itemIndex < items.length; itemIndex++) {
@@ -279,9 +312,9 @@ function refreshSideBar() {
                 '<button onclick = "replaceOldItemWhenAdding(\'' + productId + '\')" class="iconButton">' +
                 '<i class="fa fa-plus"></i>' +
                 '</button>' +
-                '<p class= "sameLine body productTitleSidenav">' + productTitle + '</p>' +
+                '<p class= "sameLine productTitleSidenav">' + productTitle + '</p>' +
                 '<button onclick = "prepareToRemoveProduct(\'' + productId + '\')" class="iconButton">' +
-                '   <i class="fa fa-minus"></i>' +
+                '<i class="fa fa-minus"></i>' +
                 '</button>' +
                 '</div>' +
                 '</div>' +
@@ -304,8 +337,15 @@ function refreshTotal() {
 /*
 *  clears cart 
 */
-function clear() {
-    localforage.clear();
+function clearCart() {
+    localforage.clear().then(value => {
+        refreshTotal();
+        refreshSideBar();
+        refreshValueOfCartNumber();
+        hideClear(true);
+        hideProductsAndPurchase(true);
+
+    });
 }
 
 /*
@@ -324,19 +364,24 @@ function toggleSideBar() {
 }
 
 function openSideBar() {
-    document.getElementById("itemsSideBar").style.width = "25%";
-    document.getElementById("main").style.marginRight = "25%";
+    document.getElementById("itemsSideBar").style.width = "30%";
+    document.getElementById("main").style.marginRight = "30%";
+    document.getElementById("shop").style.marginLeft = "11%";
+
     var cards = document.getElementsByClassName("card4perLine");
     for (var i = 0; i < cards.length; i++) {
-        cards[i].style.maxWidth = "80%";
+        cards[i].style.width = "70%";
+
     }
 }
 
 function closeSideBar() {
     document.getElementById("itemsSideBar").style.width = "0";
     document.getElementById("main").style.marginRight = "0";
+    document.getElementById("shop").style.marginLeft = "0";
+
     var cards = document.getElementsByClassName("card4perLine");
     for (var i = 0; i < cards.length; i++) {
-        cards[i].style.maxWidth = "22%";
+        cards[i].style.width = "22%";
     }
 }

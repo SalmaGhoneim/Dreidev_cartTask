@@ -14,45 +14,54 @@
 
 <body onload="getProducts()" class="bgColor">
     <div id="main">
-        <div class="body ">
-            <div class="centeredText">
-                <hr>
-                <div class="bigMargin ">
-                    <button class="sameLine circle">Shop</button>
-                    <button class="sameLine right notif smallCircle" onClick="toggleSideBar()" href="#">
-                        <i class=" green fa fa-shopping-cart fa-lg"></i>
+        <div class="centeredText">
+            <div class="header">
+                <div class="bigMargin">
+                    <button disabled class="sameLine shop titleFont" id="shop">Shop</button>
+                    <button class="sameLine right notif shoppingCart buttonWithHover" onClick="toggleSideBar()" href="#">
+                        <i class="fa fa-shopping-cart"></i>
                         <span id="numberOfItems" class="num">
                         </span>
                     </button>
                 </div>
-                <hr>
             </div>
+
             <div class="mainBody">
                 <div id="productsPart" class="sameLine">
                 </div>
-                <div class="sidenav " id="itemsSideBar">
-                    <div class="margin">
-                        <a href="javascript:void(0)" class="closebtn" onclick="toggleSideBar()">&times;</a>
-                        <div class="flexDisplay">
-                            <button class="myItemsCircle mainFont">
-                                <p>My items</p>
-                            </button>
+            </div>
 
-                        </div>
-                        <div id="itemsPart" class="itemsPart">
-                        </div>
-                        <div class="purchaseAndPrice">
-                            <button class= "total">
-                                <span id="totalPart">
-
-                                </span>
-                            </button>
-                            <div>
-                                <button class="purchaseButton"> purchase </button>
+            <div class="sidenav " id="itemsSideBar">
+                <div class="margin">
+                    <div class="flexDisplay">
+                        <span id= "dissapearWhenNoProduct">
+                            <a href="javascript:void(0)" class = "clearbtn" onclick="clearCart()">clear</a>
+                        </span>
+                        <span>
+                            <a href="javascript:void(0)" class="closebtn" onclick="toggleSideBar()">&times;</a>
+                        </span>
+                    </div>
+                    <div class="flexDisplay">
+                        <button class="myItemsCircle titleFont">
+                            <div class="my">
+                                My
                             </div>
-                        </div>
+                            items
+                        </button>
 
                     </div>
+                    <div id="itemsPart" class="itemsPart">
+                    </div>
+                    <div class="purchaseAndPrice">
+                        <button class="total">
+                            <span id="totalPart">
+                            </span>
+                        </button>
+                        <div>
+                            <button class="purchaseButton"> purchase </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
