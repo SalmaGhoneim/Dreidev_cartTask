@@ -1,4 +1,4 @@
-# Dreidev_cartTask
+# CartTask --noFramwork
 
 To get the project started
 open the terminal in the repo folder
